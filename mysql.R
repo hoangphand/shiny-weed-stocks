@@ -25,7 +25,7 @@ db <- dbConnect(MySQL(), dbname = databaseName,
 # query <- sprintf("SELECT * FROM %s", symbol_table)
 # data <- dbGetQuery(db, query)
 
-num_arr <- c(1, 2)
+num_arr <- c(9, 10)
 num_arr_str <- paste("(", paste(num_arr, collapse = ","), ")")
 # 
 query <- sprintf("SELECT symbol, date, high FROM %s 
@@ -41,6 +41,9 @@ data <- dbGetQuery(db, query)
 dbDisconnect(db)
 data
 
+select_date <- as.character.Date(Sys.Date() - 7)
+data = data[data$date >= select_date,]
+
 symbols <- levels(factor(data$symbol))
 df <- list()
 count <- 1
@@ -54,7 +57,3 @@ df
 
 merged_data <- Reduce(function(x, y) merge(x, y, all = TRUE, by = 'date'), df)
 merged_data
-# for (sym in symbols) {
-#   merged_data <- merge(df[[sym]], merged_data, all = TRUE, by = 'date')
-# }
-# merged_data
