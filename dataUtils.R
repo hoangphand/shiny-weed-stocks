@@ -22,7 +22,7 @@ readSymbolData <- function(symbolId, duration) {
   query <- sprintf("SELECT symbol, date, high 
                    FROM %s JOIN %s 
                    ON %s.symbol_id=%s.id 
-                   WHERE symbol_id = %i",
+                   WHERE symbol_id = %s",
                    symbolDailyTable,
                    symbolTable,
                    symbolDailyTable,

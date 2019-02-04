@@ -14,6 +14,17 @@ server <- function(input, output) {
     pairs(data()[, -1])
     # round(cor(data()[,-1], use='pair'), 2)
   })
+  
+  output$individualSymbols <- renderUI({
+    lapply(input$symbols, function(symbol) {
+      data <- readSymbolData(symbol, input$duration)
+      data$normed_high = scale(data$high)
+      data$date <- factor(data$date)
+      renderText({ data[1,1]})
+      renderPlot({ plot(data$date, data$normed_high) })
+    })
+  })
+  
   # output$value <- renderText({ length(data()[,1]) })
   output$value <- renderText({ data()[4,1] })
   # output$value <- renderText({ data() })

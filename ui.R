@@ -33,6 +33,11 @@ ui <- pageWithSidebar(
   # Main panel for displaying outputs ----
   mainPanel(
     plotOutput("corr"),
-    verbatimTextOutput("value")
+    
+    uiOutput("individualSymbols"),
+    
+    verbatimTextOutput("value"),
+    
+    uiOutput("test")
   )
 )
