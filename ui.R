@@ -53,6 +53,8 @@ ui <- pageWithSidebar(
     ),
     
     mainPanel(
+      plotOutput("pair"),
+      
       plotOutput("corr"),
       
       uiOutput("individualSymbols"),

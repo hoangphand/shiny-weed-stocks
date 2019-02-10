@@ -1,4 +1,5 @@
 library(shiny)
+library(corrplot)
 
 source("dataUtils.R")
 
@@ -15,12 +16,20 @@ server <- function(input, output, session) {
     }
   })
   
+  output$pair <- renderPlot({
+    validate(
+      need(length(input$symbols) >= 2, "Please select at least 2 symbols")
+    )
+    
+    pairs(data()[, -1])
+  })
+  
   output$corr <- renderPlot({
     validate(
       need(length(input$symbols) >= 2, "Please select at least 2 symbols")
     )
-    pairs(data()[, -1])
-    # round(cor(data()[,-1], use='pair'), 2)
+    corMatrix = cor(data()[,-1])
+    corrplot(corMatrix, method = "number")
   })
 
   output$individualSymbols <- renderUI({
@@ -30,9 +39,9 @@ server <- function(input, output, session) {
       if (input$periodSelection == -1) {
         fromDate <- as.character.Date(input$dateRange[1])
         toDate <- as.character.Date(input$dateRange[2])
-        data <- readSymbolDataByDateRange(input$symbols, fromDate, toDate)
+        data <- readSymbolDataByDateRange(symbol, fromDate, toDate)
       } else {
-        data <- readSymbolDataByPeriod(input$symbols, input$periodSelection)
+        data <- readSymbolDataByPeriod(symbol, input$periodSelection)
       }
       
       data$normed_high = scale(data$high)
@@ -40,7 +49,7 @@ server <- function(input, output, session) {
 
       output <- tagList()
 
-      output[[1]] <- renderText({ data[1,1]})
+      output[[1]] <- renderText({ data[1, 1] })
       output[[2]] <- renderPlot({ plot(data$date, data$normed_high) })
 
       output
@@ -48,9 +57,11 @@ server <- function(input, output, session) {
   })
   
   # output$value <- renderText({ length(data()[,1]) })
-  # output$value <- renderText({ input$dateRange })
+  output$value <- renderText({ 
+    corMatrix = cor(data()[,-1])
+    })
   # output$value <- renderText({ input$dateRange[1] })
-  output$value <- renderText({ as.character.Date(input$dateRange[1]) })
+  # output$value <- renderText({ as.character.Date(input$dateRange[1]) })
   # output$value <- renderText({ data() })
   # output$value <- renderText({ class(data()) })
   # output$value <- renderText({ length(data()[,1]) })
