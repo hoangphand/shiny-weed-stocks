@@ -2,9 +2,17 @@ library(shiny)
 
 source("dataUtils.R")
 
-server <- function(input, output) {
+duration = NULL
+
+server <- function(input, output, session) {
   data <- reactive({
-    readSymbolListData(input$symbols, input$duration)
+    if (input$periodSelection == -1) {
+      fromDate <- as.character.Date(input$dateRange[1])
+      toDate <- as.character.Date(input$dateRange[2])
+      readSymbolListDataByDateRange(input$symbols, fromDate, toDate)
+    } else {
+      readSymbolListDataByPeriod(input$symbols, input$periodSelection)
+    }
   })
   
   output$corr <- renderPlot({
@@ -14,19 +22,35 @@ server <- function(input, output) {
     pairs(data()[, -1])
     # round(cor(data()[,-1], use='pair'), 2)
   })
-  
+
   output$individualSymbols <- renderUI({
     lapply(input$symbols, function(symbol) {
-      data <- readSymbolData(symbol, input$duration)
+      data <- NULL
+      
+      if (input$periodSelection == -1) {
+        fromDate <- as.character.Date(input$dateRange[1])
+        toDate <- as.character.Date(input$dateRange[2])
+        data <- readSymbolDataByDateRange(input$symbols, fromDate, toDate)
+      } else {
+        data <- readSymbolDataByPeriod(input$symbols, input$periodSelection)
+      }
+      
       data$normed_high = scale(data$high)
       data$date <- factor(data$date)
-      renderText({ data[1,1]})
-      renderPlot({ plot(data$date, data$normed_high) })
+
+      output <- tagList()
+
+      output[[1]] <- renderText({ data[1,1]})
+      output[[2]] <- renderPlot({ plot(data$date, data$normed_high) })
+
+      output
     })
   })
   
   # output$value <- renderText({ length(data()[,1]) })
-  output$value <- renderText({ data()[4,1] })
+  # output$value <- renderText({ input$dateRange })
+  # output$value <- renderText({ input$dateRange[1] })
+  output$value <- renderText({ as.character.Date(input$dateRange[1]) })
   # output$value <- renderText({ data() })
   # output$value <- renderText({ class(data()) })
   # output$value <- renderText({ length(data()[,1]) })
