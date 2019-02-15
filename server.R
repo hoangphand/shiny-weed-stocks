@@ -28,7 +28,7 @@ server <- function(input, output, session) {
     validate(
       need(length(input$symbols) >= 2, "Please select at least 2 symbols")
     )
-    corMatrix = cor(data()[,-1])
+    corMatrix = cor(data()[,-1], use='pair')
     corrplot(corMatrix, method = "number")
   })
 
