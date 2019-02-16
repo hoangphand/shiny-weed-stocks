@@ -23,14 +23,20 @@ ui <- pageWithSidebar(
   # Sidebar panel for inputs ----
   sidebarLayout( 
     sidebarPanel(
-      tags$div(
-        class = 'multicol',
-        checkboxGroupInput("symbols", "Choose stocks:", 
-                           choiceNames = symbolData$symbol, 
-                           choiceValues = symbolData$id,
-                           selected = c(symbolData[1,1], symbolData[2,1])
-                           )
-        ),
+      # tags$div(
+      #   class = 'multicol',
+      #   checkboxGroupInput("symbols", "Choose stocks:", 
+      #                      choiceNames = symbolData$symbol, 
+      #                      choiceValues = symbolData$id,
+      #                      selected = c(symbolData[1,1], symbolData[2,1])
+      #                      )
+      #   ),
+      
+      checkboxGroupInput("symbols", "Choose stocks:", 
+                         choiceNames = paste(symbolData$short_name, paste("(", symbolData$symbol, ")", sep = '')), 
+                         choiceValues = symbolData$id,
+                         selected = c(symbolData[1,1], symbolData[2,1])
+      ),
       tags$label("Choose duration:"),
       selectInput("periodSelection", label = NULL,
                   c("Custom date range" = -1,
