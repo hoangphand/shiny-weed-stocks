@@ -22,7 +22,7 @@ server <- function(input, output, session) {
       need(length(input$symbols) >= 2, "Please select at least 2 symbols")
     )
     
-    pairs(dataOfSelectedSymbols()[, -1])
+    pairs(dataOfSelectedSymbols()[, -1], pch = 16)
   })
   
   output$corr <- renderPlot({
