@@ -63,9 +63,11 @@ ui <- pageWithSidebar(
       
       plotOutput("corr"),
       
-      uiOutput("individualSymbols"),
+      plotOutput("individualSymbols"),
       
       verbatimTextOutput("value"),
+      
+      tableOutput('table'),
       
       uiOutput("test")
     )
