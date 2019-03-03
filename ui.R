@@ -56,6 +56,10 @@ ui <- pageWithSidebar(
                        startview = "month", weekstart = 0, language = "en", 
                        separator = " to ", width = NULL)
       )
+      
+#      tags$div(id = "replybox"),
+#      tags$script("window.replybox = {site: 'oXrYMJng9k'};"),
+#      tags$script(src = "https://cdn.getreplybox.com/js/embed.js", "")
     ),
     
     mainPanel(
@@ -70,6 +74,12 @@ ui <- pageWithSidebar(
       tableOutput('table'),
       
       uiOutput("test")
+      
+#      tags$div(style = "width: 98%",
+#           tags$div(id = "replybox")
+#      ),
+#      tags$script("window.replybox = {site: 'oXrYMJng9k'};"),
+#      tags$script(src = "https://cdn.getreplybox.com/js/embed.js", "")
     )
   )
   
