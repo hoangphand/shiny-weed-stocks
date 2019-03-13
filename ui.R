@@ -23,15 +23,6 @@ ui <- pageWithSidebar(
   # Sidebar panel for inputs ----
   sidebarLayout( 
     sidebarPanel(
-      # tags$div(
-      #   class = 'multicol',
-      #   checkboxGroupInput("symbols", "Choose stocks:", 
-      #                      choiceNames = symbolData$symbol, 
-      #                      choiceValues = symbolData$id,
-      #                      selected = c(symbolData[1,1], symbolData[2,1])
-      #                      )
-      #   ),
-      
       checkboxGroupInput("symbols", "Choose stocks:", 
                          choiceNames = paste(symbolData$short_name, paste("(", symbolData$symbol, ")", sep = '')), 
                          choiceValues = symbolData$id,
@@ -56,10 +47,6 @@ ui <- pageWithSidebar(
                        startview = "month", weekstart = 0, language = "en", 
                        separator = " to ", width = NULL)
       )
-      
-#      tags$div(id = "replybox"),
-#      tags$script("window.replybox = {site: 'oXrYMJng9k'};"),
-#      tags$script(src = "https://cdn.getreplybox.com/js/embed.js", "")
     ),
     
     mainPanel(
@@ -74,12 +61,6 @@ ui <- pageWithSidebar(
       tableOutput('table'),
       
       uiOutput("test")
-      
-#      tags$div(style = "width: 98%",
-#           tags$div(id = "replybox")
-#      ),
-#      tags$script("window.replybox = {site: 'oXrYMJng9k'};"),
-#      tags$script(src = "https://cdn.getreplybox.com/js/embed.js", "")
     )
   )
   
