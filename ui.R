@@ -18,36 +18,11 @@ ui <- pageWithSidebar(
                             }
                             "))),
   # App title ----
-  headerPanel("Weed stocks"),
+  headerPanel <- NULL,
   
   # Sidebar panel for inputs ----
   sidebarLayout( 
-    sidebarPanel(
-      checkboxGroupInput("symbols", "Choose stocks:", 
-                         choiceNames = paste(symbolData$short_name, paste("(", symbolData$symbol, ")", sep = '')), 
-                         choiceValues = symbolData$id,
-                         selected = c(symbolData[1,1], symbolData[2,1])
-      ),
-      tags$label("Choose duration:"),
-      selectInput("periodSelection", label = NULL,
-                  c("Custom date range" = -1,
-                    "Last 1 week" = 7,
-                    "Last 2 week" = 14,
-                    "Last 3 week" = 21,
-                    "Last 1 month" = 30,
-                    "Last 2 month" = 60,
-                    "Last 3 month" = 90,
-                    "Last 6 month" = 180,
-                    "Last 1 year" = 365)
-                  ),
-      conditionalPanel(
-        condition = "input.periodSelection == -1",
-        dateRangeInput("dateRange", label = NULL, start = Sys.Date() - 365, end = Sys.Date(), 
-                       min = NULL, max = Sys.Date(), format = "yyyy-mm-dd", 
-                       startview = "month", weekstart = 0, language = "en", 
-                       separator = " to ", width = NULL)
-      )
-    ),
+    sidebarPanel <- NULL,
     
     mainPanel(
       plotOutput("pair"),
