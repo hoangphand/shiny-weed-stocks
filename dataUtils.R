@@ -19,7 +19,7 @@ getAllSymbols <- function() {
 readSymbolDataByPeriod <- function(symbolId, duration) {
   selectDate = as.character.Date(Sys.Date() - as.numeric(duration))
   
-  query <- sprintf("SELECT symbol, date, high 
+  query <- sprintf("SELECT symbol, date, high, volume
                    FROM %s JOIN %s 
                    ON %s.symbol_id=%s.id 
                    WHERE symbol_id = %s",
@@ -41,7 +41,7 @@ readSymbolDataByPeriod <- function(symbolId, duration) {
 readSymbolDataByDateRange <- function(symbolId, fromDate, toDate) {
   # selectDate = as.character.Date(Sys.Date() - as.numeric(duration))
   
-  query <- sprintf("SELECT symbol, date, high 
+  query <- sprintf("SELECT symbol, date, high, volume
                    FROM %s JOIN %s 
                    ON %s.symbol_id=%s.id 
                    WHERE symbol_id = %s",
@@ -66,7 +66,7 @@ readSymbolListDataByPeriod <- function(symbolIds, duration) {
     
     selectDate = as.character.Date(Sys.Date() - as.numeric(duration))
     
-    query <- sprintf("SELECT symbol, date, high 
+    query <- sprintf("SELECT symbol, date, high, volume
                      FROM %s JOIN %s 
                      ON %s.symbol_id=%s.id 
                      WHERE symbol_id IN %s",
@@ -75,8 +75,6 @@ readSymbolListDataByPeriod <- function(symbolIds, duration) {
                      symbolDailyTable,
                      symbolTable,
                      symbolIdsArrStr)
-    
-    listOfSymbolDF = list()
     
     db <- getDBConnect()
     
@@ -85,17 +83,6 @@ readSymbolListDataByPeriod <- function(symbolIds, duration) {
     closeDBConnect(db)
     
     data = data[data$date >= selectDate,]
-    
-    symbols <- levels(factor(data$symbol))
-    
-    for (symbol in symbols) {
-      listOfSymbolDF[[symbol]] <- data[data$symbol == symbol, c('date', 'high')]
-      colnames(listOfSymbolDF[[symbol]]) <- c('date', symbol)
-    }
-    
-    mergedData <- Reduce(function(x, y) merge(x, y, all = TRUE, by = 'date'), listOfSymbolDF)
-    
-    mergedData
   }
   
 }
@@ -104,7 +91,7 @@ readSymbolListDataByDateRange <- function(symbolIds, fromDate, toDate) {
   if (length(symbolIds) > 0) {
     symbolIdsArrStr <- paste("(", paste(symbolIds, collapse = ","), ")")
     
-    query <- sprintf("SELECT symbol, date, high 
+    query <- sprintf("SELECT symbol, date, high, volume
                      FROM %s JOIN %s 
                      ON %s.symbol_id=%s.id 
                      WHERE symbol_id IN %s",
@@ -114,8 +101,6 @@ readSymbolListDataByDateRange <- function(symbolIds, fromDate, toDate) {
                      symbolTable,
                      symbolIdsArrStr)
     
-    listOfSymbolDF = list()
-    
     db <- getDBConnect()
     
     data <- dbGetQuery(db, query)
@@ -123,17 +108,60 @@ readSymbolListDataByDateRange <- function(symbolIds, fromDate, toDate) {
     closeDBConnect(db)
     
     data = data[data$date >= fromDate & data$date <= toDate,]
-    
-    symbols <- levels(factor(data$symbol))
-    
-    for (symbol in symbols) {
-      listOfSymbolDF[[symbol]] <- data[data$symbol == symbol, c('date', 'high')]
-      colnames(listOfSymbolDF[[symbol]]) <- c('date', symbol)
-    }
-    
-    mergedData <- Reduce(function(x, y) merge(x, y, all = TRUE, by = 'date'), listOfSymbolDF)
-    
-    mergedData
   }
   
+}
+
+readSymbolListPriceByDateRange <- function(symbolIds, fromDate, toDate) {
+  data = readSymbolListDataByDateRange(symbolIds, fromDate, toDate)
+  
+  mergedData = extractSymbolPriceFromData(data)
+}
+
+readSymbolListVolumeByDateRange <- function(symbolIds, fromDate, toDate) {
+  data = readSymbolListDataByDateRange(symbolIds, fromDate, toDate)
+  
+  mergedData = extractSymbolVolumeFromData(data)
+}
+
+readSymbolListPriceByPeriod <- function(symbolIds, duration) {
+  data = readSymbolListDataByPeriod(symbolIds, duration)
+  
+  mergedData = extractSymbolPriceFromData(data)
+}
+
+readSymbolListVolumeByPeriod <- function(data, duration) {
+  data = readSymbolListDataByPeriod(symbolIds, duration)
+  
+  mergedData = extractSymbolVolumeFromData(data)
+}
+
+extractSymbolPriceFromData <- function(data) {
+  listOfSymbolDF = list()
+  
+  symbols <- levels(factor(data$symbol))
+  
+  for (symbol in symbols) {
+    listOfSymbolDF[[symbol]] <- data[data$symbol == symbol, c('date', 'high')]
+    colnames(listOfSymbolDF[[symbol]]) <- c('date', symbol)
+  }
+  
+  mergedData <- Reduce(function(x, y) merge(x, y, all = TRUE, by = 'date'), listOfSymbolDF)
+  
+  mergedData
+}
+
+extractSymbolVolumeFromData <- function(data) {
+  listOfSymbolDF = list()
+  
+  symbols <- levels(factor(data$symbol))
+  
+  for (symbol in symbols) {
+    listOfSymbolDF[[symbol]] <- data[data$symbol == symbol, c('date', 'volume')]
+    colnames(listOfSymbolDF[[symbol]]) <- c('date', symbol)
+  }
+  
+  mergedData <- Reduce(function(x, y) merge(x, y, all = TRUE, by = 'date'), listOfSymbolDF)
+  
+  mergedData
 }

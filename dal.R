@@ -14,6 +14,7 @@ databaseName <- "symbol_prices"
 symbolTable <- "Symbol"
 symbolDailyTable <- "Symbol_daily"
 symbolFiveMinsTable <- "Symbol_five_mins"
+symbolCorrelationsTable <- "3_months_correlation"
 
 getDBConnect <- function() {
   db = dbConnect(MySQL(), dbname = databaseName, 

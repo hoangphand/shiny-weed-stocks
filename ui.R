@@ -25,18 +25,34 @@ ui <- pageWithSidebar(
     sidebarPanel <- NULL,
     
     mainPanel(
-      plotOutput("pair"),
-      
-      plotOutput("corr"),
-      
-      plotOutput("individualSymbols"),
-      
+      conditionalPanel(
+        condition = "new URLSearchParams(window.location.search).get('destination') == 'home'",
+        plotOutput("homePair")
+      ),
+      conditionalPanel(
+        condition = "new URLSearchParams(window.location.search).get('destination') == 'home'",
+        plotOutput("homeCorr")
+      ),
+      conditionalPanel(
+        condition = "new URLSearchParams(window.location.search).get('destination') == 'home'",
+        plotOutput("homeIndividualSymbols")
+      ),
+
       verbatimTextOutput("value"),
-      
+
       tableOutput('table'),
       
-      uiOutput("test")
-    )
+      conditionalPanel(
+        condition = "new URLSearchParams(window.location.search).get('destination') == 'prediction'",
+        uiOutput("predictionResult")
+      ),
+      
+      conditionalPanel(
+        condition = "new URLSearchParams(window.location.search).get('destination') == 'prediction'",
+        plotOutput("predictionUserInput")
+      ),
+      
+      width = 12)
   )
   
 )
