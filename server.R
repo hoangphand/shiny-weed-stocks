@@ -123,7 +123,11 @@ server <- function(input, output, session) {
     }
   })
   
+  # output$dataTable <- renderDataTable(dataOfSelectedSymbols())
+  # output$table <- renderTable(dataOfSelectedSymbols()[, -1])
+  # output$dataTable <- renderDataTable(dateRangeFromURL())
+  # output$table <- renderTable(dateRangeFromURL())
+  
   output$value <- renderText({
-    # "abc"
   })
 }

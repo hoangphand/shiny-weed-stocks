@@ -39,8 +39,9 @@ ui <- pageWithSidebar(
       ),
 
       verbatimTextOutput("value"),
-
-      tableOutput('table'),
+      
+      # dataTableOutput('dataTable'),
+      # tableOutput('table'),
       
       conditionalPanel(
         condition = "new URLSearchParams(window.location.search).get('destination') == 'prediction'",
