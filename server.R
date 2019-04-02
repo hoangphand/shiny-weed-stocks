@@ -109,12 +109,16 @@ server <- function(input, output, session) {
         output$predictionResult <- renderUI({
           tagList(
             h4(paste("The original investment was $", format(round(investmentAmount), big.mark = ",", 
-                      scientific = F), "on", as.character(as.Date(Sys.Date() + investmentDuration)))),
+                      scientific = F), "placed on", as.character(as.Date(Sys.Date())))),
+            h4(paste("As of", as.character(as.Date(Sys.Date() + investmentDuration))), ", we think that:"),
             h4(paste("You have a", sprintf(" %.1f %%", 100 * portfolioValuesToDisplay[4]), 
-                     "chance of having less than $", portfolioValuesToDisplay[1])),
+                     "chance of having less than $", format(round(portfolioValuesToDisplay[1]), 
+                                                            big.mark = ",", scientific = F))),
             h4(paste("You also have a", sprintf(" %.1f %%", 100 * portfolioValuesToDisplay[4]), 
-                         "chance of having more than $", portfolioValuesToDisplay[3])),
-            h4(paste("Our best guess is that you will have about $", portfolioValuesToDisplay[2])))
+                         "chance of having more than $", format(round(portfolioValuesToDisplay[3]), 
+                                                                big.mark = ",", scientific = F))),
+            h4(paste("Our best guess is that you will have about $", format(round(portfolioValuesToDisplay[2]), 
+                                                                            big.mark = ",", scientific = F))))
           
         })
         
